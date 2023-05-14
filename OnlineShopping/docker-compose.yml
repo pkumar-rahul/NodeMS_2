@@ -1,0 +1,55 @@
+version: '3.4'
+
+services:
+  products:
+    image:  products
+    build: 
+      context: onlineshopping/products
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 4000:4000
+  reviews:
+    image:  reviews
+    build:  ./reviews
+    environment:
+      NODE_ENV: production
+    ports:
+      - 4001:4001
+  query:
+    image:  query
+    build: 
+      context: onlineshopping/query
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 4002:4002
+  authservice:
+    image: authservice
+    build:
+      context: onlineshopping/authService
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 4003:4003
+  mongodb:
+    image: mongo:latest
+    ports: 
+      - 27017:27017
+    volumes:
+      - data:/data/db
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbitmq'
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+        - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+volumes:
+  data:
+    driver: local
